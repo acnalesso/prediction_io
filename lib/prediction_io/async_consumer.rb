@@ -20,7 +20,7 @@ module PredictionIO
     # here, as @thread instance variable needs to
     # be the last assigned in order to work properly.
     #
-    # Default number of threads to be spawn is 1.
+    # Default number of threads to be spawned is 1.
     #
     attr_reader :block, :off
     attr_reader :queue, :threads, :mutex
@@ -36,28 +36,31 @@ module PredictionIO
     end
 
     ##
-    # Consumes queue's data ( call a block passed )
-    # yielding its queue's data to it.
+    # Yields data passed onto the queue to the passed block.
     #
-    # This queue's data stack is a 
-    # FIFO ( First In First Out ).
+    # NOTE: It suspends the calling thread until
+    # data is pushed onto the queue, If non_block is true,
+    # queue.shift(true) the thread isn't suspended and an
+    # exception is raised.
+    #
+    # This is a FIFO(First in First Out) queue's data stack
     # http://en.wikipedia.org/wiki/FIFO
     #
     def consume
-      while arg = queue.shift
-        mutex.synchronize do
-          block.call(arg)
-          @off = queue.empty?
-        end
+      while argument = queue.shift
+        block.call(argument)
+        mutex.synchronize { @off = queue.empty? }
       end
     end
 
     ##
-    # Pushes args in to queue.
+    # Pushes data on to queue.
+    # sets off to false which means
+    # #finished? is not finished yet.
     #
-    def push(*args)
-      queue.push(*args)
+    def push(*data)
       mutex.synchronize { @off = false }
+      queue.push(*data)
     end
 
     ##
@@ -66,15 +69,15 @@ module PredictionIO
     # themselves if threads where finished whithin limit seconds.
     #
     # If you call it without a limit second,
-    # it will use 0.001 ms as default
-    # Wait for a threadmeans:
+    # it will use 0.01s as default
+    # Wait for a thread means:
     # Stops main thread ( current one ) and waits until the
     # other thread(s) is finished, then passes execution
     # to main thread again. )
     #
     # ttw = time_to_wait
     #
-    def wait_threads_to_finish!(ttw=0.001)
+    def wait_threads_to_finish!(ttw=0.01)
       threads.map { |t| t.join(ttw) }
     end
 
