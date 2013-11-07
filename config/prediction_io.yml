@@ -1,0 +1,11 @@
+# Check out documentation for more info
+user:
+  username: batman
+  password: secret
+
+request:
+  timeout: 5
+
+server:
+  host: http://localhost:3000
+  proxy: null
