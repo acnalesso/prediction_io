@@ -37,7 +37,9 @@ GEM
       tzinfo (~> 0.3.37)
     arel (4.0.1)
     atomic (1.1.14)
+    atomic (1.1.14-java)
     bson (1.9.2)
+    bson (1.9.2-java)
     builder (3.1.4)
     cucumber (1.3.9)
       builder (>= 2.1.2)
@@ -49,6 +51,8 @@ GEM
     durran-validatable (2.0.1)
     erubis (2.7.0)
     gherkin (2.12.2)
+      multi_json (~> 1.3)
+    gherkin (2.12.2-java)
       multi_json (~> 1.3)
     hike (1.2.3)
     i18n (0.6.5)
@@ -107,6 +111,8 @@ GEM
     thor (0.18.1)
     thread_safe (0.1.3)
       atomic
+    thread_safe (0.1.3-java)
+      atomic
     tilt (1.4.1)
     treetop (1.4.15)
       polyglot
@@ -114,6 +120,7 @@ GEM
     tzinfo (0.3.38)
 
 PLATFORMS
+  java
   ruby
 
 DEPENDENCIES
