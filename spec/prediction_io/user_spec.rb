@@ -1,13 +1,13 @@
 require 'ostruct'
 require 'spec_helper'
 require 'active_resource'
-require 'prediction_io/configuration'
+require 'prediction_io/configurator'
 require 'prediction_io/user'
 
 describe PredictionIO::User do
 
   let(:user) { PredictionIO::User }
-  let(:config) { PredictionIO::Configuration }
+  let(:config) { PredictionIO::Configurator }
 
   context "Configuration" do
     it "should have site host" do

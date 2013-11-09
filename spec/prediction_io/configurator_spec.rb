@@ -1,9 +1,9 @@
 require 'spec_helper'
-require 'prediction_io/configuration'
+require 'prediction_io/configurator'
 
-describe PredictionIO::Configuration do
+describe PredictionIO::Configurator do
 
-  let(:config) { PredictionIO::Configuration }
+  let(:config) { PredictionIO::Configurator }
 
   it "should have config file path" do
     config.config_file_path.should match /config\/prediction_io.yml/

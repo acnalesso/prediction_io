@@ -2,13 +2,14 @@ require 'yaml'
 require 'ostruct'
 
 module PredictionIO
+
   ##
   # Sets CONFIG_PATH to default config dir
-  # if it hasn't been set yet.
+  # if it has not been set yet.
   #
   CONFIG_PATH ||= File.expand_path("../../../", __FILE__)
 
-  class Configuration
+  class Configurator
 
     ##
     # Open up singleton class
