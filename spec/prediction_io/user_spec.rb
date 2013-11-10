@@ -1,44 +1,39 @@
 require 'spec_helper'
 
-module PredictionIO
-describe User do
-
-  let(:user)    { User }
-  let(:config)  { Configurator }
+describe PredictionIO::User do
+  subject { described_class }
 
   context "Configuration" do
-    it "should have site host" do
-      user.site.to_s.should match /localhost/
+    context "site setup" do
+      subject { described_class.site }
+
+      its(:host)  { should eq('localhost') }
+      its(:scheme) { should eq('https') }
     end
 
-    it "should connect via https" do
-      user.site.to_s.should match /https:/
-    end
+    its(:password) { should eq(PredictionIO::PASSWORD) }
+    its(:user)     { should eq(PredictionIO::USERNAME) }
 
     it "should only set https to user object" do
-      Server.site.to_s.should_not match /https:/
+      PredictionIO::Server.site.scheme.should_not eq('https')
     end
 
-    it "should have password" do
-      # eq("my_secret_key")
-      user.password.should eq(PASSWORD)
-    end
-
-    it "should have an username" do
-      # eq('batman')
-      user.user.should eq(USERNAME)
-    end
   end
 
   context "Creating an user" do
-    it { user.should respond_to :create_user }
+    let(:params) do
+      { user: { user_id: 1 } }
+    end
+
+    before do
+      subject.stub(:create).with(params).and_return(true)
+    end
+
+    it { should respond_to(:create_user) }
 
     it "should pass user id to be created" do
-      params = { user: { user_id: 1 } }
-      user.stub(:create).with(params).and_return(true)
-      user.create_user(1).should be_true
+      subject.create_user(1).should be_true
     end
   end
 
-end
 end
