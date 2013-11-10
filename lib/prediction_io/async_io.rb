@@ -37,7 +37,7 @@ module PredictionIO
     # Every worker must finish its job within a limit time
     # timer hre makes sure they do so.
     #
-   def timer
+    def timer
       rescuer do
         Timeout.timeout(ttl) { yield }
       end
@@ -91,7 +91,7 @@ module PredictionIO
       begin
         yield
       rescue Exception => e
-        # write to log files 
+        # write to log files
       end
     end
 

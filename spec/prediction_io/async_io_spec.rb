@@ -1,104 +1,91 @@
 require 'spec_helper'
-require 'prediction_io/async_io'
-
-PredictionIO::AsyncIO.class_eval do
-  ##
-  # Returns queue's size and pops one
-  # item from queue.
-  def extract_size!
-    queue.size.tap { queue.pop }
-  end
-end
 
 describe PredictionIO::AsyncIO do
+  subject { described_class.new }
 
-  before { Thread.stub(:new).and_return(double) }
+  before do
+    subject.stub(:extract_size!).and_return do
+      subject.queue.size.tap { subject.queue.pop }
+    end
 
-  let(:alien) { PredictionIO::AsyncIO.new }
+    Thread.stub(:new).and_return(double)
+  end
 
   context "initialising" do
-    it "should have a queue" do
-      alien.queue.should be_kind_of Queue
+    its(:queue)   { should be_kind_of(Queue) }
+    its(:ttl)     { should eq(5) }
+
+    context "default threads" do
+      subject { described_class.new.threads }
+
+      its(:size) { should eq(1) }
     end
 
-    it "should create 1 thread as default" do
-      alien.threads.size.should eq(1)
-    end
-
-    it "should have 5s default time to live" do
-      alien.ttl.should eq(5)
-    end
   end
 
   context "#worker" do
-
-    it "should have a worker method" do
-      alien.should respond_to :worker
-    end
+    it { should respond_to(:worker) }
 
     it "should_not raise_error when no block is passed" do
-      expect {
-        alien.worker(:jason)
-      }.to_not raise_error
+      expect { subject.worker(:jason) }.to_not raise_error
     end
 
     it "should not raise error when block is passed" do
-      expect {
-        alien.worker(:lizza) { }
-      }.to_not raise_error
+      expect { subject.worker(:lizza) { } }.to_not raise_error
     end
 
     it "should push worker onto the queue" do
-      alien.worker(:paul) { }
-      alien.extract_size!.should eq(1)
+      subject.worker(:paul) { }
+      subject.extract_size!.should eq(1)
     end
 
     it "should return an instance of Worker" do
-      result = alien.worker(:blunt) { }
-      result.should be_instance_of PredictionIO::AsyncIO::Worker
+      worker = subject.worker(:blunt) { }
+      worker.should be_instance_of(described_class::Worker)
     end
   end
 
 
   context "#rescuer" do
-    it { alien.should respond_to :rescuer }
+    it { should respond_to(:rescuer) }
 
     it "should rescue when an exception is raised" do
-      expect {
-        alien.rescuer { raise "hell" }
-      }.to_not raise_error
+      expect { subject.rescuer { raise "hell" } }.to_not raise_error
     end
 
     it "should not raise when no block" do
-      expect {
-        alien.rescuer
-      }.to_not raise_error
+      expect { subject.rescuer }.to_not raise_error
     end
 
     it "should not raise when block is present" do
-      expect {
-        alien.rescuer { :imma_block }
-      }.to_not raise_error
+      expect { subject.rescuer { :imma_block } }.to_not raise_error
     end
   end
 
   context "#timeout" do
-    before { alien.stub(:ttl).and_return(0.00001) }
+    before { subject.stub(:ttl).and_return(0.00001) }
 
     it "should not raise error if time exceeded" do
       expect {
-        alien.timer { sleep(0.001) }
+        subject.timer { sleep(0.001) }
       }.to_not raise_error
     end
 
     it "should suspend operation if time is exceeded" do
-      alien.timer { sleep(1) }.should be_nil
+      subject.timer { sleep(1) }.should be_nil
     end
 
   end
 
   context "#async" do
-    it { alien.should respond_to :async }
+    let(:worker)  { double }
+    let(:payload) { proc { :im_an_async_job } }
+
+    before do
+      subject.stub(:worker).and_return(worker)
+    end
+
+    it { should respond_to(:async) }
 
     ##
     # NOTE: this snippet here can be a little tricky
@@ -118,56 +105,54 @@ describe PredictionIO::AsyncIO do
     # The following might be helpul:
     # robertsosinski.com/2008/12/21/understanding-ruby-blocks-procs-and-lambdas
 
-    #
     it "should pass this payload block onto Worker" do
-      payload = -> { :im_an_async_job }
-
-      worker = double
-      alien.stub(:worker).
-        and_return(worker)
-
-      ##
-      # See the link below for a better understading how to
-      # pass/call blocks of code in Ruby.
-      # pragdave.pragprog.com/pragdave/2005/11/symbolto_proc.html
-      #
-      alien.async(&payload) # to_proc
-
-      alien.should have_received(:worker).with(payload)
+      subject.should_receive(:worker).with(payload)
+      subject.async(&payload) # to_proc
     end
   end
 
   context "#consumer" do
-    it { alien.should respond_to :consumer }
-
-    it "should pop and consume items in a queue" do
-      bob = double
-
-      ##
-      # returns false to break the while loop.
-      #
-      bob.should_receive(:pop).and_return(false)
-      alien.stub(:queue).and_return(bob)
-
-      alien.consumer.should be_nil
+    let(:item) { double }
+    let(:duck) { double }
+    let(:tob) do
+      proc { raise "Not going to be Raised" }
     end
 
-    it "should not raise any error" do
-      tob = -> { raise "Not going to be Raised" }
-      alien.queue.push(tob)
+    before do
+      subject.stub(:queue).and_return([item])
+    end
 
-      expect {
-      alien.consumer
-      }.to_not raise_error
+    it { should respond_to(:consumer) }
+
+    context "with queue items that do not raise exceptions" do
+      let(:item) { double }
+
+      before do
+        ##
+        # returns false to break the while loop.
+        #
+        subject.queue.should_receive(:pop).and_return(false)
+      end
+
+      it "should pop and consume" do
+        subject.consumer.should be_nil
+      end
+    end
+
+    context "with queue items that raise an exception" do
+      let(:item) do
+        proc { raise "Not going to be raised" }
+      end
+
+      it "should not raise any error" do
+        expect { subject.consumer }.to_not raise_error
+      end
     end
 
     it "should call a worker" do
-      duck = double
-      duck.should_receive(:call)
+      item.should_receive(:call)
 
-      alien.stub(:queue).and_return([duck])
-
-      alien.consumer
+      subject.consumer
     end
 
   end
