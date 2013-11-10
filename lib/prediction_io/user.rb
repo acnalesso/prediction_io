@@ -2,7 +2,7 @@ module PredictionIO
 
   class Server < ::ActiveResource::Base
 
-    self.site = PredictionIO::Configurator.server["host"]
+    self.site = PredictionIO::HOST
 
     ##
     # Gets default site url set at Server
@@ -28,8 +28,8 @@ module PredictionIO
     #
     self.set_https!
 
-    self.user     = PredictionIO::Configurator.user["username"]
-    self.password = PredictionIO::Configurator.user["password"]
+    self.user     = PredictionIO::USERNAME
+    self.password = PredictionIO::PASSWORD
 
     def self.create_user(user_id, args={})
       self.create({ user: { user_id: user_id }.merge(args) })

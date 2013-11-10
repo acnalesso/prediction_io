@@ -1,4 +1,4 @@
 require 'prediction_io/load'
 
-module PredictionIo
+module PredictionIO
 end

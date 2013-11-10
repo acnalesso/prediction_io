@@ -66,7 +66,60 @@ module PredictionIO
         objectify.send(name, *args)
       end
 
+      def generate_constants!
+        yield_config { |const_name, value|
+          PredictionIO.const_set(const_name, value)
+        }
+      end
+
+      private
+
+        ##
+        # TODO: Allow nested constants
+        # {
+        #   user { username: "ab", proxy: "...",
+        #   api: { proxy: "..." }
+        # }
+        #
+        # Should be USERNAME, USERNAME::PROXY
+        #
+        # OR
+        # We could set constants based on the hash key,
+        # for example:
+        #
+        # User.set_constant("USERNAME", "ab")
+        # User.set_constant("PROXY", "ab")
+        #
+        # PredictionIO.set_const("PROXY", "..")
+        #
+        # They constant look up in Ruby works is that it first
+        # looks for this constant in the first most object
+        # in this case User or PredictionIO and it keeps going
+        # up the constants stack until it finds it, otherwise
+        # it raises an exception. ( Uninitialized Constant ... )
+        #
+        #
+        #
+        # Yields configuration ready to create constants
+        # and set their values.
+        #
+        # { user: { username: "a", password: "b" } }
+        #
+        # USERNAME, "a"
+        # PASSWORD, "b"
+        #
+        def yield_config
+          yaml_to_hash.each_value do |config|
+            config.each { |v| yield(v[0].upcase, v[1].freeze) }
+          end
+        end
+
     end
 
   end
+
+  ##
+  # Generates constants
+  Configurator.generate_constants!
+
 end
