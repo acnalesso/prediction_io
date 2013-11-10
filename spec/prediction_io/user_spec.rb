@@ -1,7 +1,4 @@
-require 'ostruct'
 require 'spec_helper'
-require 'active_resource'
-require 'prediction_io/user'
 
 module PredictionIO
 describe User do

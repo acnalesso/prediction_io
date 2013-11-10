@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'prediction_io/async_io'
 
 module PredictionIO
   describe AsyncIO::Worker do
