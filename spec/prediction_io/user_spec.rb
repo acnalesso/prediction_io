@@ -1,13 +1,13 @@
 require 'ostruct'
 require 'spec_helper'
 require 'active_resource'
-require 'prediction_io/configurator'
 require 'prediction_io/user'
 
-describe PredictionIO::User do
+module PredictionIO
+describe User do
 
-  let(:user) { PredictionIO::User }
-  let(:config) { PredictionIO::Configurator }
+  let(:user)    { User }
+  let(:config)  { Configurator }
 
   context "Configuration" do
     it "should have site host" do
@@ -19,17 +19,17 @@ describe PredictionIO::User do
     end
 
     it "should only set https to user object" do
-      PredictionIO::Server.site.to_s.should_not match /https:/
+      Server.site.to_s.should_not match /https:/
     end
 
     it "should have password" do
       # eq("my_secret_key")
-      user.password.should eq(config.user["password"])
+      user.password.should eq(PASSWORD)
     end
 
     it "should have an username" do
       # eq('batman')
-      user.user.should eq(config.user["username"])
+      user.user.should eq(USERNAME)
     end
   end
 
@@ -43,4 +43,5 @@ describe PredictionIO::User do
     end
   end
 
+end
 end
