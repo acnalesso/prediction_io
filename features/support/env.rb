@@ -2,3 +2,21 @@ $:.unshift File.expand_path('../../../lib', __FILE__)
 
 require 'active_resource'
 require 'prediction_io'
+
+module PredictionIO
+  Logger = Object.new
+  def Logger.error(n); end
+end
+
+##
+# Whenever you ask a job if it is +done+
+# it returns false if not, here we wait
+# until a job is done and then yields its
+# result.
+#
+def wait_for(job)
+  until job.done
+    sleep(0.001) unless job.done
+  end
+  yield(job.done)
+end

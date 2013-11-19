@@ -19,28 +19,42 @@ describe User do
     end
 
     it "should only set https to user object" do
-      Server.site.to_s.should_not match /https:/
+      Connection.site.to_s.should_not match /https:/
     end
 
     it "should have password" do
-      # eq("my_secret_key")
+      #                    eq("my_secret_key")
       user.password.should eq(PASSWORD)
     end
 
     it "should have an username" do
-      # eq('batman')
+      #                eq('batman')
       user.user.should eq(USERNAME)
     end
   end
 
-  context "Creating an user" do
-    it { user.should respond_to :create_user }
+  context "#acreate_user" do
 
-    it "should pass user id to be created" do
-      params = { user: { user_id: 1 } }
-      user.stub(:create).with(params).and_return(true)
-      user.create_user(1).should be_true
+    before do
+      PredictionIO.should_receive(:async).
+        and_return(true)
     end
+
+    let(:params) { { pio_uid: 1 } }
+
+    before { user.stub(:create).with(params).and_return(true) }
+
+    it "should take an user_id to be created" do
+      user.acreate_user(1).should be_true
+    end
+
+    it "should take extra params" do
+      extra = { pio_latitude: 0.0, pio_longitude: 0.2 }
+      params.merge!(extra)
+
+      user.acreate_user(1, extra).should be_true
+    end
+    
   end
 
 end

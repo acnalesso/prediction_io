@@ -8,4 +8,5 @@ api:
   host: http://localhost:3000
   timeout: 5
   proxy: null
+  pool: 5
 
