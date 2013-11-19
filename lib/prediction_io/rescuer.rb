@@ -1,8 +1,8 @@
+require 'prediction_io/logger'
+
 module PredictionIO
 
   module Rescuer
-
-    attr_accessor :logger
 
     ##
     # Rescues any sort of exception raised and
@@ -13,7 +13,7 @@ module PredictionIO
       begin
         yield
       rescue Exception => notice
-        logger.error("[:PredictionIO::AsyncIO:] - #{notice}\n")
+        Logger.error("[:PredictionIO::AsyncIO:] - #{notice}\n")
         :rescued
       end
     end

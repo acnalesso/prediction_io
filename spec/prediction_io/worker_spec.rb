@@ -9,8 +9,6 @@ module PredictionIO
     let(:job)     { -> { :am_a_dog } }
     let(:worker)  { Worker.new(payload, job) }
 
-    before { worker.logger = PredictionIO::Logger }
-
     context "initialising" do
 
       it "must take a payload" do

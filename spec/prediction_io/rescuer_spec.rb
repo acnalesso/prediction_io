@@ -39,9 +39,6 @@ describe PredictionIO::Rescuer do
 
   context "Logs", "whenever an exception is raised"  do
 
-    it { guard.should respond_to :logger }
-    it { guard.should respond_to :logger= }
-
     it "should write error to logger" do
       guard.rescuer { raise "log me!" }
       logger.read.should match /log me!/
