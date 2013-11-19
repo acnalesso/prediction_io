@@ -12,7 +12,7 @@ module PredictionIO
     self.password = PredictionIO::PASSWORD
 
 
-    def self.acreate_user(uid, params={}, &payload)
+    def self.acreate(uid, params={}, &payload)
       PredictionIO.async(payload) do
         params = { pio_uid: uid }.merge!(params)
         User.create(params)

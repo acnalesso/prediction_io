@@ -33,7 +33,7 @@ describe User do
     end
   end
 
-  context "#acreate_user" do
+  context "#acreate" do
 
     before do
       PredictionIO.should_receive(:async).
@@ -45,14 +45,14 @@ describe User do
     before { user.stub(:create).with(params).and_return(true) }
 
     it "should take an user_id to be created" do
-      user.acreate_user(1).should be_true
+      user.acreate(1).should be_true
     end
 
     it "should take extra params" do
       extra = { pio_latitude: 0.0, pio_longitude: 0.2 }
       params.merge!(extra)
 
-      user.acreate_user(1, extra).should be_true
+      user.acreate(1, extra).should be_true
     end
 
   end
