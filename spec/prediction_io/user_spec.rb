@@ -54,7 +54,7 @@ describe User do
 
       user.acreate_user(1, extra).should be_true
     end
-    
+
   end
 
 end
