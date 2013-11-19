@@ -25,6 +25,12 @@ module PredictionIO
       }
     end
 
+    def self.adelete(uid, params={}, &payload)
+      pio.async(payload) {
+        User.delete(uid, params.merge!({ pio_uid: uid }))
+      }
+    end
+
     def self.pio
       @@pio ||= PredictionIO
     end

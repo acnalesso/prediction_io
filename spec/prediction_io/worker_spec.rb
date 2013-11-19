@@ -2,6 +2,10 @@ require 'spec_helper'
 require 'prediction_io/worker'
 
 module PredictionIO
+  Worker.class_eval do
+    public(:fallback)
+  end
+
   describe Worker do
 
     #              lambda { |r| r }
@@ -47,14 +51,44 @@ module PredictionIO
 
       it { worker.should respond_to :timer }
 
-      it "should not raise error if time exceeded" do
+      it "should raise error if time exceeded" do
         expect {
           worker.timer { sleep(0.001) }
-        }.to_not raise_error
+        }.to raise_error
+      end
+    end
+
+    describe "#try" do
+      it { worker.should respond_to :try }
+
+      context "failed" do
+        it "should call fallback" do
+          worker.should_receive(:fallback)
+          worker.try { raise "failed" }
+        end
       end
 
-      it "should suspend operation if time is exceeded" do
-        worker.timer { sleep(5) }.should be_rescued
+      context "success" do
+        it "should not call fallback" do
+          worker.should_not_receive(:fallback)
+          worker.try { :happy }
+        end
+      end
+
+      context "#fallback" do
+        let(:fallback) { worker.fallback("notice") }
+
+        it "should have a notice" do
+          fallback.notice.should eq("notice")
+        end
+
+        it "should have a worker" do
+          fallback.worker.should eq worker
+        end
+
+        it "should return nil when method not found" do
+          fallback.will_return_nil.should be_nil
+        end
       end
 
     end

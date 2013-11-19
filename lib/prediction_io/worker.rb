@@ -41,7 +41,9 @@ module PredictionIO
     # and job is finished.
     #
     def call
-      timer { @done = payload.call(job.call) }
+      try do
+        timer { @done = payload.call(job.call) }
+      end
     end
 
     ##
@@ -49,10 +51,36 @@ module PredictionIO
     # timer makes sure they do so.
     #
     def timer
-      rescuer do
-        Timeout.timeout(ttl) { yield }
+      Timeout.timeout(ttl) { yield }
+    end
+
+    ##
+    # Tries to get the first job done, when an exception
+    # is raised it then calls payload again passing an
+    # fallback as its argument.
+    #
+    def try
+      begin
+        yield
+      rescue Exception => notice
+        rescuer { payload.call(fallback(notice)) }
       end
     end
+
+    private
+
+      ##
+      # Instances of OpenStruct returns nil when the method
+      # called does not exist. This prevents another exception
+      # from being raised.
+      # It returns an instance of OpenStruct object with the
+      # exception rescued ( i.e notice ) and the worker that
+      # was assigned to this particular job.
+      #
+      def fallback(notice)
+        @done = true
+        OpenStruct.new({ notice: notice, worker: self })
+      end
 
   end
 end

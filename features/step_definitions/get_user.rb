@@ -1,8 +1,3 @@
-log = Object.new
-def log.error(n); warn(n); end
-
-PredictionIO::Logger = log
-
 Given(/^I have one user created$/) do
  @user.acreate(1)
 end

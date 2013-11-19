@@ -15,8 +15,14 @@ RSpec.configure do |c|
 end
 
 class PredictionIO::FakeAsync
+
+  ##
+  # Calls payload and passes whatever
+  # job.call yields as its argument.
+  #
   def self.async(payload, &job)
-    yield(payload)
+    payload = payload || ->(n) { n }
+    payload.call(job.call)
   end
 
   def worker(payload, &job)
@@ -27,4 +33,7 @@ end
 
 RSpec::Matchers.define(:be_rescued){ |e|
   match { |a| a === :rescued }
+}
+RSpec::Matchers.define(:be_deleted){ |e|
+  match { |a| a === :deleted }
 }
