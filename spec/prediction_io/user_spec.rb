@@ -33,15 +33,14 @@ describe User do
     end
   end
 
+  before do
+    User.stub(:pio).
+      and_return(PredictionIO::FakeAsync)
+  end
+
   context "#acreate" do
 
-    before do
-      PredictionIO.should_receive(:async).
-        and_return(true)
-    end
-
     let(:params) { { pio_uid: 1 } }
-
     before { user.stub(:create).with(params).and_return(true) }
 
     it "should take an user_id to be created" do
@@ -53,6 +52,18 @@ describe User do
       params.merge!(extra)
 
       user.acreate(1, extra).should be_true
+    end
+
+  end
+
+  context "#aget" do
+    let(:get_params) { { pio_uid: 1, pio_appkey: "key" } }
+    before { user.stub(:get).with(1, get_params).and_return(true) }
+
+    it { user.should respond_to :aget }
+
+    it "should aget one user" do
+      user.aget(1, get_params).should be_true
     end
 
   end

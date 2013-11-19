@@ -11,15 +11,23 @@ module PredictionIO
   end
 
   ##
-  # Creates async jobs, if a job (i.e ruby block)
-  # is not given it passes an empty job to woker.
+  # Creates async jobs, if a payload (i.e ruby block)
+  # is not given it passes an empty payload to woker.
   # That allows us to do:
   #
-  # payload = ->(n) { sleep(10); print n }
-  # async(payload)
+  # User.aget(1)
+  # User.aget(1) { |u| print u.id }
+  #
+  # The response will be a worker that was created for this
+  # particular job.
+  #
+  # NOTE: If you read PredictionIO::Worker you will see that
+  # it calls payload and passes job as its arguments. This is
+  # how it is available within a block later on.
+  # NOTE: You must pass a job ( i.e ruby block ).
   #
   def self.async(payload, &job)
-    job = block_given? ? job : lambda {}
+    payload = payload || ->(n) { n }
     async_creator.worker(payload, &job)
   end
 

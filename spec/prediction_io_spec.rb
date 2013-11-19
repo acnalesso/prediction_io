@@ -10,14 +10,8 @@ end
 require 'spec_helper'
 require 'prediction_io'
 
-class PredictionIO::FakeWorker
-  def worker(payload, &job)
-    payload.call(job.call)
-  end
-
-end
 describe PredictionIO do
-  let(:fake_async) { PredictionIO::FakeWorker.new }
+  let(:fake_async) { PredictionIO::FakeAsync.new }
   let(:pio) { PredictionIO }
   let(:payload) { ->(n) { n } }
 
@@ -43,12 +37,6 @@ describe PredictionIO do
       pio.async(:payload) { :job }
     end
 
-    it "should not raise_error if no job is given" do
-      expect {
-        pio.async(payload)
-      }.to_not raise_error
-    end
-
     it "should raise error if no payload is given" do
       expect {
         pio.async
@@ -66,7 +54,7 @@ describe PredictionIO do
       def payload.call(n); n; end
 
       expect {
-        pio.async(payload)
+        pio.async(payload) { }
       }.to_not raise_error
     end
 

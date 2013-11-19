@@ -13,10 +13,20 @@ module PredictionIO
 
 
     def self.acreate(uid, params={}, &payload)
-      PredictionIO.async(payload) do
+      pio.async(payload) {
         params = { pio_uid: uid }.merge!(params)
         User.create(params)
-      end
+      }
+    end
+
+    def self.aget(uid, params={}, &payload)
+      pio.async(payload) {
+        User.get(uid, params.merge({ pio_uid: uid })) 
+      }
+    end
+
+    def self.pio
+      @@pio ||= PredictionIO
     end
 
   end

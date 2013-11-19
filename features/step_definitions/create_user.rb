@@ -1,21 +1,3 @@
-Before do
-  @user = PredictionIO::User
-  user = { user: { user_id: 1 }}.to_json
-
-  # check out active_resource/http_mock for more info
-  ActiveResource::HttpMock.respond_to do |m|
-    m.get("/users.json", Accept,
-      { users: [] }.to_json, 200, ResponseHeaders)
-
-    m.get("/users/1.json", Accept, user, 200, ResponseHeaders)
-
-    m.post("/users.json",
-      { "Authorization" => "Basic YmF0bWFuOnNlY3JldA==" },
-      user, 201, ResponseHeaders)
-  end
-
-end
-
 Given(/^no user exists yet$/) do
   @user.all.should have(0).users
 end
