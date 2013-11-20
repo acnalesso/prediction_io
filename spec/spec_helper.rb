@@ -7,7 +7,7 @@ module PredictionIO
   def Logger.read; @n; end
 end
 
-require 'active_resource/http_mock'
+require 'active_resource'
 require 'prediction_io/configurator'
 
 RSpec.configure do |c|

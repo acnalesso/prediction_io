@@ -34,7 +34,7 @@ Before do
     m.get("/users.json",              Accept, { users: [] }.to_json,  200, ResponseHeaders)
     m.get("/users/1.json",            Accept, user,                   200, ResponseHeaders)
     m.get("/users/1.json?pio_uid=1",  Accept, user,                   200, ResponseHeaders)
-    m.get("/users/3.json?pio_uid=3",  Accept, {}.to_json,             404, ResponseHeaders)
+    m.get("/users/3.json?pio_appkey=my_app_key&pio_uid=3",  Accept, {}.to_json,             404, ResponseHeaders)
     m.get("/users/1.json?pio_appkey=abc&pio_uid=1", Accept, user,     200, ResponseHeaders)
 
     # Uncomment when testing against auth.
@@ -44,7 +44,7 @@ Before do
 
     m.post("/users.json", { "Content-Type" => "application/json" }, user, 201, ResponseHeaders)
 
-    m.delete("/users/3.json?pio_uid=3", Accept, user, 202, ResponseHeaders)
+    m.delete("/users/3.json?pio_appkey=my_app_key&pio_uid=3", Accept, user, 202, ResponseHeaders)
   end
 
 end

@@ -11,27 +11,8 @@ module PredictionIO
     self.password = PredictionIO::PASSWORD
 
 
-    def self.acreate(uid, params={}, &payload)
-      pio.async(payload) {
-        params = { pio_uid: uid }.merge!(params)
-        User.create(params)
-      }
-    end
-
-    def self.aget(uid, params={}, &payload)
-      pio.async(payload) {
-        User.get(uid, params.merge({ pio_uid: uid }))
-      }
-    end
-
-    def self.adelete(uid, params={}, &payload)
-      pio.async(payload) {
-        User.delete(uid, params.merge!({ pio_uid: uid }))
-      }
-    end
-
-    def self.pio
-      @@pio ||= PredictionIO
+    def self.merge_params(id, params)
+      { pio_uid: id }.merge!(default_params).merge!(params)
     end
 
   end
