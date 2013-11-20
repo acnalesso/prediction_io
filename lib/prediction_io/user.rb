@@ -20,7 +20,7 @@ module PredictionIO
 
     def self.aget(uid, params={}, &payload)
       pio.async(payload) {
-        User.get(uid, params.merge({ pio_uid: uid })) 
+        User.get(uid, params.merge({ pio_uid: uid }))
       }
     end
 

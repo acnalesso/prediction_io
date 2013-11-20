@@ -9,4 +9,5 @@ api:
   timeout: 5
   proxy: null
   pool: 5
+  appkey: :my_app_key
 

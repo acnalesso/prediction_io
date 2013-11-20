@@ -5,7 +5,7 @@ module PredictionIO
   class Worker
     include PredictionIO::Rescuer
 
-    attr_reader :payload, :job, :ttl
+    attr_reader :payload, :job
     attr_reader :finished, :done
 
     def initialize(payload, job)
@@ -13,7 +13,6 @@ module PredictionIO
       @job      = job
       @done     = false
       @finished = false
-      @ttl      = PredictionIO::TIMEOUT
     end
 
     ##
@@ -44,21 +43,11 @@ module PredictionIO
     #
     def call
       try do
-        timer do
-          @done = job.call
-          payload.call(done).tap {
-            @finished = true
-          }
-        end
+        @done = job.call
+        payload.call(done).tap {
+          @finished = true
+        }
       end
-    end
-
-    ##
-    # Every worker must finish a job within a limit time.
-    # timer makes sure they do so.
-    #
-    def timer
-      Timeout.timeout(ttl) { yield }
     end
 
     ##

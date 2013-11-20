@@ -28,6 +28,11 @@ describe User do
       #                eq('batman')
       user.user.should eq(USERNAME)
     end
+
+    # 5 seconds as default
+    it "should have timeout" do
+      user.timeout.should eq(TIMEOUT)
+    end
   end
 
   before do

@@ -1,7 +1,8 @@
 module PredictionIO
   class Connection < ::ActiveResource::Base
 
-    self.site = PredictionIO::HOST
+    self.site     = PredictionIO::HOST
+    self.timeout  = PredictionIO::TIMEOUT
 
     ##
     # Gets default site url set at Server

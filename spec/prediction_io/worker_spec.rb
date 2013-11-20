@@ -8,7 +8,6 @@ module PredictionIO
 
   describe Worker do
 
-    #              lambda { |r| r }
     let(:payload) { ->(r) { r } }
     let(:job)     { -> { :am_a_dog } }
     let(:worker)  { Worker.new(payload, job) }
@@ -21,10 +20,6 @@ module PredictionIO
 
       it "must take a job" do
         worker.job.should be_kind_of Proc
-      end
-
-      it "should have set default for ttl" do
-        worker.ttl.should eq 5
       end
 
     end
@@ -43,18 +38,6 @@ module PredictionIO
       it "should set done to its last finished job" do
         worker.call
         worker.done.should eq(:am_a_dog)
-      end
-    end
-
-    context "#timer" do
-      before { worker.stub(:ttl).and_return(0.00001) }
-
-      it { worker.should respond_to :timer }
-
-      it "should raise error if time exceeded" do
-        expect {
-          worker.timer { sleep(0.001) }
-        }.to raise_error
       end
     end
 
