@@ -5,8 +5,7 @@ module PredictionIO
 
     ##
     # Changes http to https
-    #
-    self.set_https!
+    # self.set_https!
 
     self.user     = PredictionIO::USERNAME
     self.password = PredictionIO::PASSWORD

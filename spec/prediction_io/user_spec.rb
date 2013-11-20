@@ -14,13 +14,10 @@ describe User do
       user.site.to_s.should match /localhost/
     end
 
-    it "should connect via https" do
-      user.site.to_s.should match /https:/
-    end
-
-    it "should only set https to user object" do
-      Connection.site.to_s.should_not match /https:/
-    end
+    # TODO?
+    # it "should connect via https" do
+    #  user.site.to_s.should match /https:/
+    # end
 
     it "should have password" do
       #                    eq("my_secret_key")

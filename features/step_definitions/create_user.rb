@@ -16,7 +16,7 @@ end
 
 When(/^I create a new user with id "(.*?)", pio_latitude: "(.*?)", and pio_longitude: "(.*?)"$/) do |user_id, lat, lon|
   params = { pio_latitude: lat, pio_longitude: lon }
-  @worker = @user.acreate(user_id.to_i, params) { |r| r }
+  @worker = @user.acreate(user_id.to_i, params) { |t| t }
 end
 
 Then(/^I should have one user created$/) do

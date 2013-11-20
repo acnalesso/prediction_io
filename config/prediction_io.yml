@@ -1,8 +1,8 @@
 # Check out documentation for more info
 
 user:
-  username: batman
-  password: secret
+  username: null
+  password: null
 
 api:
   host: http://localhost:3000

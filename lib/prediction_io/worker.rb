@@ -5,12 +5,14 @@ module PredictionIO
   class Worker
     include PredictionIO::Rescuer
 
-    attr_reader :payload, :job, :done, :ttl
+    attr_reader :payload, :job, :ttl
+    attr_reader :finished, :done
 
     def initialize(payload, job)
       @payload  = payload
       @job      = job
       @done     = false
+      @finished = false
       @ttl      = PredictionIO::TIMEOUT
     end
 
@@ -42,7 +44,12 @@ module PredictionIO
     #
     def call
       try do
-        timer { @done = payload.call(job.call) }
+        timer do
+          @done = job.call
+          payload.call(done).tap {
+            @finished = true
+          }
+        end
       end
     end
 
@@ -78,7 +85,7 @@ module PredictionIO
       # was assigned to this particular job.
       #
       def fallback(notice)
-        @done = true
+        @finished = true
         OpenStruct.new({ notice: notice, worker: self })
       end
 
