@@ -32,7 +32,7 @@ Configurations have to be pre-defined in config/prediction_io.yml
       password: secret
 
     api:
-      key: my_supersecret_key
+      appkey: my_supersecret_key
       host: http://localhost:3000
       timeout: 5
       proxy: null
