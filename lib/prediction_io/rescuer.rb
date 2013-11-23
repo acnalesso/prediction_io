@@ -11,7 +11,7 @@ module PredictionIO
       begin
         yield
       rescue Exception => notice
-        PredictionIO::Logger.error("[:PredictionIO::AsyncIO:] - #{notice}\n")
+        PredictionIO::Logger.error("[-:PredictionIO::AsyncIO:-] - #{notice}\n")
         :rescued
       end
     end

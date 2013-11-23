@@ -25,11 +25,14 @@ module PredictionIO
     #=> Paul Clark Manson
     #
     # Or any other sort of task that you may
-    # need its result to be available within a block
-    # without blocking IO.
+    # need its result to be available within a block without
+    # needing to wait for it to finish and non blocking IO.
     #
-    # payload is a block you must pass, for example:
+    # A payload is a Ruby object must pass, for example:
+    #
     # payload = lambda { |u| print u.name }
+    # payload = Object.new
+    # def payload.call(result); warn(result); end
     #
     # job is pre-definied inside a method, it can
     # be anything, for example:
@@ -37,16 +40,11 @@ module PredictionIO
     #   User.find(uid)
     # end
     #
-    # Every worker must finish a job within a limit
-    # time, if not an exception is raised, logged,
-    # and job is finished.
-    #
     def call
       try do
+        @finished = true
         @done = job.call
-        payload.call(done).tap {
-          @finished = true
-        }
+        payload.call(done)
       end
     end
 
@@ -74,7 +72,6 @@ module PredictionIO
       # was assigned to this particular job.
       #
       def fallback(notice)
-        @finished = true
         OpenStruct.new({ notice: notice, worker: self })
       end
 

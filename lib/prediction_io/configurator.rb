@@ -25,8 +25,7 @@ module PredictionIO
 
       ##
       # CONFIG_PATH  should point to root_path
-      # default is /config/prediction_io.yml which allows
-      # us to use convention over configuration. ( ie RoR )
+      # default is /config/prediction_io.yml.
       #
       def config_file_path
         CONFIG_PATH + "/config/prediction_io.yml"

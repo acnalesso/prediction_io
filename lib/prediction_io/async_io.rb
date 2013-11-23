@@ -16,7 +16,7 @@ module PredictionIO
     # Whenever an exception is raised, the thread that the
     # exception was raised from is killed, so we need a
     # way to prevent threads from being killed. Therefore it
-    # rescues all exceptions raised and log them.
+    # rescues all exceptions raised and logs them.
     #
     attr_reader   :queue, :threads
     attr_accessor :logger
@@ -28,8 +28,8 @@ module PredictionIO
     end
 
     ##
-    # Ruby Queue#pop sets non_block to false
-    # Therefore it waits until data is pushed on to
+    # Ruby Queue#pop sets non_block to false.
+    # It waits until data is pushed on to
     # the queue and then process it.
     #
     def consumer
@@ -43,11 +43,9 @@ module PredictionIO
 
     ##
     # It creates a new Worker a push it onto the queue,
-    # whenever a 'job' (i.e a block of code ) is finished
+    # whenever a 'job' (i.e a Ruby object ) is finished
     # it calls the payload and passes the result of job
-    # to it. Every worker has a time to finish its job,
-    # if somehow it does not finish withing time limit
-    # another exception is raised and the job is finished.
+    # to it.
     #
     # For example:
     #
@@ -58,8 +56,9 @@ module PredictionIO
     # end
     #
     # It returns the worker created for a particular job
-    # which you could send a message +job+ to it in order
+    # which you could send message +done+ to it in order
     # to retrieve its job done.
+    # see prediction_io/worker.rb
     #
     # For example:
     # result = aget_user(1) { |u| Logger.info(u.name) }
@@ -71,7 +70,7 @@ module PredictionIO
     # => "John"
     #
     # NOTE: Whenever you use the snippet above, if the job
-    # has not been finished yet you will get +nil+
+    # has not been finished yet you will get +false+
     # whenever you send a message +job+ to it. Once
     # job is finished you will be able to get its result.
     #
