@@ -8,7 +8,6 @@ module ActiveResource
 end
 
 require 'spec_helper'
-require 'prediction_io'
 
 describe PredictionIO do
   let(:fake_async) { PredictionIO::FakeAsync.new }
