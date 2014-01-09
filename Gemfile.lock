@@ -51,6 +51,7 @@ GEM
     multi_test (0.0.2)
     rails-observers (0.1.2)
       activemodel (~> 4.0)
+    rake (10.1.0)
     rspec (2.14.1)
       rspec-core (~> 2.14.0)
       rspec-expectations (~> 2.14.0)
@@ -73,4 +74,5 @@ DEPENDENCIES
   cucumber
   mongoid
   prediction_io!
+  rake
   rspec
