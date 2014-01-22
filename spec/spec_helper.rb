@@ -1,14 +1,15 @@
 module PredictionIO
   CONFIG_PATH = File.
     expand_path("../support", __FILE__)
-
-  Logger = Object.new
-  def Logger.error(n); @n = n; end
-  def Logger.read; @n; end
 end
 
 require 'prediction_io'
 require 'prediction_io/configurator'
+
+logger = Object.new
+def logger.error(n); @n = n; end
+def logger.read; @n; end
+PredictionIO.configure_logger!(logger)
 
 RSpec.configure do |c|
   c.treat_symbols_as_metadata_keys_with_true_values = true

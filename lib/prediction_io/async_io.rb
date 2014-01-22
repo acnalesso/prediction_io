@@ -21,7 +21,7 @@ module PredictionIO
     attr_reader   :queue, :threads
     attr_accessor :logger
     def initialize(n_threads=1)
-      @logger   = PredictionIO::Logger
+      @logger   = PredictionIO.logger
       @queue    = Queue.new
       @threads  = []
       n_threads.times { @threads << Thread.new { consumer } }
@@ -61,7 +61,7 @@ module PredictionIO
     # see prediction_io/worker.rb
     #
     # For example:
-    # result = aget_user(1) { |u| Logger.info(u.name) }
+    # result = aget_user(1) { |u| logger.info(u.name) }
     #
     # # job may take a while to be done...
     #

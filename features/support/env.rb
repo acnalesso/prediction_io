@@ -4,11 +4,6 @@ require 'active_resource'
 require 'prediction_io'
 
 
-module PredictionIO
-  Logger = Object.new
-  def Logger.error(n); n; end
-end
-
 ##
 # Whenever you ask a job if it is +done+
 # it returns false if not, here we wait

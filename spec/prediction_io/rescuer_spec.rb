@@ -5,13 +5,13 @@ class Guard
   include PredictionIO::Rescuer
 
   def initialize
-    @logger = PredictionIO::Logger
+    @logger = PredictionIO.logger
   end
 
 end
 
 describe PredictionIO::Rescuer do
-  let(:logger) { PredictionIO::Logger }
+  let(:logger) { PredictionIO.logger }
   let(:guard) { Guard.new }
 
   it { guard.should respond_to :rescuer }

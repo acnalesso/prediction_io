@@ -69,7 +69,6 @@ module PredictionIO
         yield_config { |const_name, value|
           PredictionIO.const_set(const_name, value)
         }
-        PredictionIO.const_set(:Logger, configure_logger)
       end
 
       private
@@ -113,15 +112,6 @@ module PredictionIO
             config.each { |v| yield(v[0].upcase, v[1].freeze) }
           end
         end
-
-
-      ##
-      # TODO: Accepts using existing logger
-      # TODO: Accepts set a custom logger
-      #
-      def configure_logger
-        Logger.new(STDOUT)
-      end
     end
 
   end
