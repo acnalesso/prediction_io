@@ -21,7 +21,7 @@ describe PredictionIO::AsyncIO do
   before        { Thread.stub(:new).and_return(double) }
 
   let(:alien)   { PredictionIO::AsyncIO.new }
-  let(:logger)  { PredictionIO::Logger }
+  let(:logger)  { PredictionIO.logger }
 
   context "initialising" do
     it "should have a queue" do

@@ -2,6 +2,14 @@ require 'prediction_io/load'
 
 module PredictionIO
 
+  def self.logger
+    @@logger ||= configure_logger!
+  end
+
+  def self.configure_logger!(logger=Logger.new(STDOUT))
+    @@logger = logger
+  end
+
   def self.async_creator=(new_async)
     @@async_creator = new_async
   end

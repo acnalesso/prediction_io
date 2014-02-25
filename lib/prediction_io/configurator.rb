@@ -112,7 +112,6 @@ module PredictionIO
             config.each { |v| yield(v[0].upcase, v[1].freeze) }
           end
         end
-
     end
 
   end
